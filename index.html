@@ -1,0 +1,616 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>IFS–IEEE Impact Dashboard</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <style>
+    :root{
+      --bg:#0b1020;
+      --card:#121935;
+      --muted:#1a2347;
+      --accent:#7dd3fc; /* sky-300 */
+      --accent-2:#a78bfa; /* violet-400 */
+      --good:#34d399; /* emerald-400 */
+      --warn:#f59e0b; /* amber-500 */
+      --bad:#fb7185;  /* rose-400 */
+      --text:#e5e7eb; /* zinc-200 */
+      --text-dim:#9ca3af; /* gray-400 */
+      --shadow: 0 10px 30px rgba(0,0,0,.35);
+      --radius: 18px;
+    }
+    *{box-sizing:border-box}
+    html,body{height:100%}
+    body{
+      margin:0; font-family:Inter,system-ui,-apple-system,Segoe UI,Roboto,Arial; color:var(--text); background: radial-gradient(1200px 800px at 10% -10%, #1a2560 0%, transparent 60%),
+      radial-gradient(1200px 800px at 110% 10%, #222a6b 0%, transparent 60%), var(--bg);
+    }
+    .wrap{max-width:1280px; margin-inline:auto; padding:28px}
+    header{
+      display:flex; gap:18px; align-items:center; justify-content:space-between; margin-bottom:18px;
+    }
+    .title{display:flex; gap:14px; align-items:center}
+    .logo{width:44px; height:44px; border-radius:12px; background:linear-gradient(135deg,var(--accent),var(--accent-2)); box-shadow:var(--shadow)}
+    h1{margin:0; font-size:22px; letter-spacing:.3px}
+    .sub{color:var(--text-dim); font-size:12px}
+
+    .layout{
+      display:grid; grid-template-columns: 360px 1fr; gap:22px; align-items:start;
+    }
+    @media (max-width: 1024px){.layout{grid-template-columns:1fr}}
+
+    .card{background: linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.0));
+      border:1px solid rgba(255,255,255,.06); backdrop-filter: blur(6px); border-radius:var(--radius); box-shadow:var(--shadow)}
+    .card .hd{display:flex; align-items:center; justify-content:space-between; padding:16px 18px; border-bottom:1px solid rgba(255,255,255,.06)}
+    .card .bd{padding:16px 18px}
+
+    .form-grid{display:grid; grid-template-columns:1fr 1fr; gap:12px}
+    .form-grid .full{grid-column:1/-1}
+    label{display:block; font-size:12px; color:var(--text-dim); margin-bottom:6px}
+    input,select,textarea{
+      width:100%; padding:10px 12px; background:var(--muted); color:var(--text); border:1px solid rgba(255,255,255,.07); border-radius:12px; outline:none;
+    }
+    textarea{min-height:64px; resize:vertical}
+    .btn{display:inline-flex; align-items:center; gap:8px; padding:10px 14px; border-radius:12px; border:1px solid rgba(255,255,255,.08); background:linear-gradient(135deg,rgba(125,211,252,.14), rgba(167,139,250,.14)); color:var(--text); cursor:pointer}
+    .btn:hover{filter:brightness(1.08)}
+    .btn.ghost{background:transparent}
+    .btn-bar{display:flex; gap:10px; flex-wrap:wrap}
+
+    .kpis{display:grid; grid-template-columns: repeat(4, minmax(0,1fr)); gap:14px}
+    @media (max-width: 900px){.kpis{grid-template-columns: repeat(2, minmax(0,1fr))}}
+    .kpi{padding:16px; border-radius:16px; background:linear-gradient(180deg, rgba(255,255,255,0.03), rgba(255,255,255,0.02)); border:1px solid rgba(255,255,255,.06)}
+    .kpi .lbl{font-size:12px; color:var(--text-dim)}
+    .kpi .val{font-size:26px; font-weight:800; margin-top:6px}
+    .kpi .note{font-size:11px; color:var(--text-dim)}
+
+    .charts{display:grid; grid-template-columns: 1fr 1fr; gap:16px; margin-top:16px}
+    @media (max-width: 1200px){.charts{grid-template-columns:1fr}}
+
+    table{width:100%; border-collapse: collapse; font-size:13px}
+    thead th{color:var(--text-dim); font-weight:600; text-align:left; padding:10px; border-bottom:1px solid rgba(255,255,255,.06)}
+    tbody td{padding:10px; border-bottom:1px solid rgba(255,255,255,.04)}
+    tbody tr:hover{background:rgba(255,255,255,.02)}
+    .tag{font-size:11px; padding:4px 8px; border-radius:999px; border:1px solid rgba(255,255,255,.12)}
+    .lvl-SB{background:rgba(125,211,252,.12)}
+    .lvl-SEC{background:rgba(167,139,250,.12)}
+    .lvl-GLB{background:rgba(52,211,153,.12)}
+
+    .filters{display:grid; grid-template-columns: repeat(3, minmax(0,1fr)); gap:10px}
+
+    .footer{margin-top:14px; display:flex; justify-content:space-between; align-items:center; color:var(--text-dim); font-size:12px}
+    .file-input{display:inline-flex; gap:8px; align-items:center}
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <header>
+      <div class="title">
+        <div class="logo" aria-hidden="true"></div>
+        <div>
+          <h1>IFS–IEEE Impact Dashboard</h1>
+          <div class="sub">Live, browser‑based view of IFS engagement with IEEE (Student Branch ▸ Section ▸ Global)</div>
+        </div>
+      </div>
+      <div class="btn-bar" role="toolbar" aria-label="Global actions">
+        <button class="btn" id="loadSampleBtn" title="Load sample data">Load Sample Data</button>
+        <button class="btn ghost" id="clearDataBtn" title="Clear saved data">Clear Data</button>
+        <button class="btn ghost" id="exportBtn" title="Export data as JSON">Export JSON</button>
+        <label class="file-input btn ghost" title="Import data JSON">
+          <input id="importFile" type="file" accept="application/json" style="display:none" />
+          <span>Import JSON</span>
+        </label>
+      </div>
+    </header>
+
+    <div class="layout">
+      <!-- Left: Data Entry -->
+      <section class="card" aria-labelledby="formHd">
+        <div class="hd">
+          <div>
+            <strong id="formHd">Add / Edit Engagement</strong>
+            <div class="sub">Manually enter each IEEE activity with IFS involvement</div>
+          </div>
+        </div>
+        <div class="bd">
+          <form id="engagementForm" class="form-grid" autocomplete="off">
+            <div class="full">
+              <label for="title">Title / Event Name</label>
+              <input id="title" required placeholder="e.g., Path to Internship 2025 – Workshop" />
+            </div>
+            <div>
+              <label for="date">Date</label>
+              <input id="date" type="date" required />
+            </div>
+            <div>
+              <label for="level">Engagement Level</label>
+              <select id="level" required>
+                <option value="Student Branch">Student Branch</option>
+                <option value="Section">Sri Lanka Section</option>
+                <option value="Global">IEEE Global</option>
+              </select>
+            </div>
+            <div>
+              <label for="category">Category</label>
+              <select id="category" required>
+                <option>Event</option>
+                <option>Speaker Session</option>
+                <option>Mentoring</option>
+                <option>Funding</option>
+                <option>Partnership</option>
+              </select>
+            </div>
+            <div>
+              <label for="org">Host (University / Org)</label>
+              <input id="org" placeholder="e.g., SLIIT, UoJ, R10 YP" />
+            </div>
+            <div>
+              <label for="location">Location</label>
+              <input id="location" placeholder="e.g., Malabe, Colombo, Tokyo" />
+            </div>
+            <div>
+              <label for="participants">Participants / Audience</label>
+              <input id="participants" type="number" min="0" step="1" value="0" />
+            </div>
+            <div>
+              <label for="speakers">IFS Speakers</label>
+              <input id="speakers" type="number" min="0" step="1" value="0" />
+            </div>
+            <div>
+              <label for="mentors">IFS Mentors</label>
+              <input id="mentors" type="number" min="0" step="1" value="0" />
+            </div>
+            <div>
+              <label for="funding">Funding (LKR)</label>
+              <input id="funding" type="number" min="0" step="0.01" value="0" />
+            </div>
+            <div>
+              <label for="mentees">Mentees (Pipeline)</label>
+              <input id="mentees" type="number" min="0" step="1" value="0" />
+            </div>
+            <div>
+              <label for="interns">Interns (Pipeline)</label>
+              <input id="interns" type="number" min="0" step="1" value="0" />
+            </div>
+            <div>
+              <label for="hires">Hires (Pipeline)</label>
+              <input id="hires" type="number" min="0" step="1" value="0" />
+            </div>
+            <div class="full">
+              <label for="notes">Notes</label>
+              <textarea id="notes" placeholder="Key outcomes, links, quotes, recognition, etc."></textarea>
+            </div>
+            <div class="full btn-bar">
+              <button class="btn" type="submit" id="saveBtn">Save Entry</button>
+              <button class="btn ghost" type="button" id="resetBtn">Reset</button>
+            </div>
+            <input type="hidden" id="editId" />
+          </form>
+        </div>
+      </section>
+
+      <!-- Right: KPIs, Filters, Charts, Table -->
+      <section class="card" aria-labelledby="dashHd">
+        <div class="hd">
+          <div>
+            <strong id="dashHd">Live Dashboard</strong>
+            <div class="sub">Auto‑updates as you add data. Filters apply to all widgets.</div>
+          </div>
+          <div class="filters" style="max-width:560px">
+            <div>
+              <label for="filterYear">Year</label>
+              <select id="filterYear"></select>
+            </div>
+            <div>
+              <label for="filterLevel">Level</label>
+              <select id="filterLevel">
+                <option>All</option>
+                <option>Student Branch</option>
+                <option>Sri Lanka Section</option>
+                <option>IEEE Global</option>
+              </select>
+            </div>
+            <div>
+              <label for="filterCategory">Category</label>
+              <select id="filterCategory">
+                <option>All</option>
+                <option>Event</option>
+                <option>Speaker Session</option>
+                <option>Mentoring</option>
+                <option>Funding</option>
+                <option>Partnership</option>
+              </select>
+            </div>
+          </div>
+        </div>
+        <div class="bd">
+          <!-- KPIs -->
+          <div class="kpis" role="region" aria-label="Key metrics">
+            <div class="kpi"><div class="lbl">Total Events Supported</div><div class="val" id="kpiEvents">0</div><div class="note" id="kpiEventsNote">Event | Speaker | Mentoring</div></div>
+            <div class="kpi"><div class="lbl">IFS Speakers & Mentors</div><div class="val" id="kpiSM">0</div><div class="note">Sum of speakers + mentors</div></div>
+            <div class="kpi"><div class="lbl">Total Funding (LKR)</div><div class="val" id="kpiFunding">0</div><div class="note" id="kpiFundingNote">Across filtered data</div></div>
+            <div class="kpi"><div class="lbl">Total Reach</div><div class="val" id="kpiReach">0</div><div class="note">Participants / audience</div></div>
+          </div>
+
+          <!-- Charts -->
+          <div class="charts">
+            <div class="card" style="padding:12px">
+              <div class="hd" style="border:0; padding:8px 10px 0 10px"><strong>Events by Level</strong><div class="sub">Count of supported events</div></div>
+              <div class="bd"><canvas id="barEvents"></canvas></div>
+            </div>
+            <div class="card" style="padding:12px">
+              <div class="hd" style="border:0; padding:8px 10px 0 10px"><strong>Funding by Level</strong><div class="sub">Distribution of LKR amounts</div></div>
+              <div class="bd"><canvas id="pieFunding"></canvas></div>
+            </div>
+            <div class="card" style="padding:12px">
+              <div class="hd" style="border:0; padding:8px 10px 0 10px"><strong>Year‑on‑Year Engagement</strong><div class="sub">All engagement categories</div></div>
+              <div class="bd"><canvas id="lineYoY"></canvas></div>
+            </div>
+            <div class="card" style="padding:12px">
+              <div class="hd" style="border:0; padding:8px 10px 0 10px"><strong>Talent Pipeline</strong><div class="sub">Mentees → Interns → Hires</div></div>
+              <div class="bd"><canvas id="barPipeline"></canvas></div>
+            </div>
+          </div>
+
+          <!-- Recent Entries Table -->
+          <div class="card" style="margin-top:16px">
+            <div class="hd" style="padding:12px 16px"><strong>Recent Entries</strong><div class="sub">Click a row to edit • Use 🗑 to delete</div></div>
+            <div class="bd" style="padding:0">
+              <table id="entriesTable" aria-label="Recent engagements">
+                <thead>
+                  <tr>
+                    <th>Date</th>
+                    <th>Title</th>
+                    <th>Level</th>
+                    <th>Category</th>
+                    <th>Participants</th>
+                    <th>Speakers</th>
+                    <th>Mentors</th>
+                    <th>Funding (LKR)</th>
+                    <th>Actions</th>
+                  </tr>
+                </thead>
+                <tbody></tbody>
+              </table>
+            </div>
+          </div>
+
+          <div class="footer">
+            <div>Data persists locally (browser). Export & import JSON to collaborate.</div>
+            <div>Built for IFS × IEEE • v1.0</div>
+          </div>
+        </div>
+      </section>
+    </div>
+  </div>
+
+  <script>
+    // ---------------- Utility ----------------
+    const $ = (sel, ctx=document) => ctx.querySelector(sel);
+    const $$ = (sel, ctx=document) => Array.from(ctx.querySelectorAll(sel));
+    const uid = () => Math.random().toString(36).slice(2,10);
+    const fmtNum = (n) => (n||0).toLocaleString('en-LK');
+    const fmtMoneyShort = (n) => {
+      n = Number(n||0);
+      if(n >= 1_000_000_000) return 'LKR ' + (n/1_000_000_000).toFixed(1) + 'B';
+      if(n >= 1_000_000)     return 'LKR ' + (n/1_000_000).toFixed(1) + 'M';
+      if(n >= 1_000)         return 'LKR ' + (n/1_000).toFixed(1) + 'K';
+      return 'LKR ' + fmtNum(n);
+    };
+
+    // ---------------- Storage ----------------
+    const KEY = 'ifs_ieee_impact_data_v1';
+    const loadData = () => {
+      try { return JSON.parse(localStorage.getItem(KEY)) || { engagements: [] }; }
+      catch { return { engagements: [] }; }
+    };
+    const saveData = (d) => localStorage.setItem(KEY, JSON.stringify(d));
+
+    let state = loadData();
+
+    // ---------------- Filters ----------------
+    const filterYear = $('#filterYear');
+    const filterLevel = $('#filterLevel');
+    const filterCategory = $('#filterCategory');
+
+    function populateYearFilter(){
+      const years = new Set(state.engagements.map(e => new Date(e.date).getFullYear()));
+      const yearList = Array.from(years).sort((a,b)=>b-a);
+      filterYear.innerHTML = '<option>All</option>' + yearList.map(y=>`<option>${y}</option>`).join('');
+    }
+
+    function applyFilters(list){
+      const y = filterYear.value;
+      const lv = filterLevel.value;
+      const cat = filterCategory.value;
+      return list.filter(e => {
+        const okY = (y==='All') || (new Date(e.date).getFullYear().toString()===y);
+        const okL = (lv==='All') || (e.level===normalizeLevel(lv));
+        const okC = (cat==='All') || (e.category===cat);
+        return okY && okL && okC;
+      });
+    }
+
+    function normalizeLevel(lv){
+      if(lv==='Sri Lanka Section') return 'Sri Lanka Section';
+      if(lv==='IEEE Global') return 'IEEE Global';
+      return lv; // Student Branch or already normalized
+    }
+
+    // ---------------- KPIs ----------------
+    const kpiEvents = $('#kpiEvents');
+    const kpiSM = $('#kpiSM');
+    const kpiFunding = $('#kpiFunding');
+    const kpiReach = $('#kpiReach');
+
+    function computeKPIs(list){
+      const isEventLike = (c) => ['Event','Speaker Session','Mentoring'].includes(c);
+      const events = list.filter(e=>isEventLike(e.category)).length;
+      const speakersMentors = list.reduce((s,e)=> s + (Number(e.speakers)||0) + (Number(e.mentors)||0), 0);
+      const funding = list.reduce((s,e)=> s + (Number(e.funding)||0), 0);
+      const reach = list.reduce((s,e)=> s + (Number(e.participants)||0), 0);
+      return { events, speakersMentors, funding, reach };
+    }
+
+    function renderKPIs(){
+      const list = applyFilters(state.engagements);
+      const k = computeKPIs(list);
+      kpiEvents.textContent = fmtNum(k.events);
+      kpiSM.textContent = fmtNum(k.speakersMentors);
+      kpiFunding.textContent = fmtMoneyShort(k.funding);
+      kpiReach.textContent = fmtNum(k.reach);
+      $('#kpiFundingNote').textContent = list.length ? 'Across filtered data' : 'Add entries to see totals';
+    }
+
+    // ---------------- Charts ----------------
+    let barEventsChart, pieFundingChart, lineYoYChart, barPipelineChart;
+
+    function dataByLevel(list){
+      const levels = ['Student Branch','Sri Lanka Section','IEEE Global'];
+      const outCount = [0,0,0];
+      const outFund = [0,0,0];
+      list.forEach(e=>{
+        const idx = levels.indexOf(e.level);
+        if(idx<0) return;
+        if(['Event','Speaker Session','Mentoring'].includes(e.category)) outCount[idx]++;
+        outFund[idx] += Number(e.funding)||0;
+      });
+      return { levels, outCount, outFund };
+    }
+
+    function dataYoY(list){
+      const map = new Map();
+      list.forEach(e=>{
+        const y = new Date(e.date).getFullYear();
+        map.set(y, (map.get(y)||0) + 1);
+      });
+      const years = Array.from(map.keys()).sort((a,b)=>a-b);
+      const vals = years.map(y=>map.get(y));
+      return { years, vals };
+    }
+
+    function dataPipeline(list){
+      const sums = list.reduce((acc,e)=>{
+        acc.mentees += Number(e.mentees)||0;
+        acc.interns += Number(e.interns)||0;
+        acc.hires += Number(e.hires)||0;
+        return acc;
+      }, { mentees:0, interns:0, hires:0 });
+      return sums;
+    }
+
+    function createOrUpdateCharts(){
+      const list = applyFilters(state.engagements);
+      const {levels, outCount, outFund} = dataByLevel(list);
+      const yoy = dataYoY(list);
+      const pipeline = dataPipeline(list);
+
+      // Events by Level (Bar)
+      const beCtx = $('#barEvents');
+      if(barEventsChart) barEventsChart.destroy();
+      barEventsChart = new Chart(beCtx, {
+        type:'bar',
+        data:{ labels: levels, datasets:[{ label:'Events', data: outCount }] },
+        options:{ responsive:true, maintainAspectRatio:false, scales:{ y:{ beginAtZero:true } } }
+      });
+
+      // Funding by Level (Pie)
+      const pfCtx = $('#pieFunding');
+      if(pieFundingChart) pieFundingChart.destroy();
+      pieFundingChart = new Chart(pfCtx, {
+        type:'pie',
+        data:{ labels: levels, datasets:[{ data: outFund }] },
+        options:{ responsive:true, maintainAspectRatio:false }
+      });
+
+      // YoY (Line)
+      const lyCtx = $('#lineYoY');
+      if(lineYoYChart) lineYoYChart.destroy();
+      lineYoYChart = new Chart(lyCtx, {
+        type:'line',
+        data:{ labels: yoy.years, datasets:[{ label:'Engagements', data: yoy.vals, fill:false, tension:.2 }] },
+        options:{ responsive:true, maintainAspectRatio:false, scales:{ y:{ beginAtZero:true } } }
+      });
+
+      // Pipeline (Bar)
+      const plCtx = $('#barPipeline');
+      if(barPipelineChart) barPipelineChart.destroy();
+      barPipelineChart = new Chart(plCtx, {
+        type:'bar',
+        data:{ labels:['Mentees','Interns','Hires'], datasets:[{ label:'Count', data:[pipeline.mentees, pipeline.interns, pipeline.hires] }] },
+        options:{ responsive:true, maintainAspectRatio:false, scales:{ y:{ beginAtZero:true } } }
+      });
+    }
+
+    // ---------------- Table ----------------
+    const tableBody = $('#entriesTable tbody');
+
+    function renderTable(){
+      const list = [...state.engagements].sort((a,b)=> new Date(b.date) - new Date(a.date));
+      const rows = list.map(e=>{
+        const levTag = e.level==='Student Branch' ? 'lvl-SB' : (e.level==='Sri Lanka Section' ? 'lvl-SEC' : 'lvl-GLB');
+        return `<tr data-id="${e.id}">
+          <td>${new Date(e.date).toLocaleDateString()}</td>
+          <td>${e.title || ''}</td>
+          <td><span class="tag ${levTag}">${e.level}</span></td>
+          <td>${e.category}</td>
+          <td>${fmtNum(e.participants)}</td>
+          <td>${fmtNum(e.speakers)}</td>
+          <td>${fmtNum(e.mentors)}</td>
+          <td>${fmtNum(e.funding)}</td>
+          <td><button class="btn ghost" data-act="del" title="Delete">🗑</button></td>
+        </tr>`
+      }).join('');
+      tableBody.innerHTML = rows || `<tr><td colspan="9" style="text-align:center; color:var(--text-dim); padding:18px">No entries yet. Add your first engagement on the left.</td></tr>`;
+
+      // Row interactions
+      tableBody.querySelectorAll('tr').forEach(row=>{
+        row.addEventListener('click', (ev)=>{
+          if(ev.target && ev.target.dataset.act === 'del'){
+            const id = row.dataset.id; delEntry(id); ev.stopPropagation(); return;
+          }
+          const id = row.dataset.id; editEntry(id);
+        });
+      });
+    }
+
+    function delEntry(id){
+      const idx = state.engagements.findIndex(e=>e.id===id);
+      if(idx>-1){
+        if(confirm('Delete this entry?')){
+          state.engagements.splice(idx,1);
+          saveData(state); refresh();
+        }
+      }
+    }
+
+    function editEntry(id){
+      const e = state.engagements.find(x=>x.id===id);
+      if(!e) return;
+      $('#editId').value = e.id;
+      $('#title').value = e.title||'';
+      $('#date').value = e.date || '';
+      $('#level').value = e.level;
+      $('#category').value = e.category;
+      $('#org').value = e.org||'';
+      $('#location').value = e.location||'';
+      $('#participants').value = e.participants||0;
+      $('#speakers').value = e.speakers||0;
+      $('#mentors').value = e.mentors||0;
+      $('#funding').value = e.funding||0;
+      $('#mentees').value = e.mentees||0;
+      $('#interns').value = e.interns||0;
+      $('#hires').value = e.hires||0;
+      $('#notes').value = e.notes||'';
+      $('#saveBtn').textContent = 'Update Entry';
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    // ---------------- Form handling ----------------
+    $('#engagementForm').addEventListener('submit', (ev)=>{
+      ev.preventDefault();
+      const payload = {
+        id: $('#editId').value || uid(),
+        title: $('#title').value.trim(),
+        date: $('#date').value,
+        level: $('#level').value,
+        category: $('#category').value,
+        org: $('#org').value.trim(),
+        location: $('#location').value.trim(),
+        participants: Number($('#participants').value)||0,
+        speakers: Number($('#speakers').value)||0,
+        mentors: Number($('#mentors').value)||0,
+        funding: Number($('#funding').value)||0,
+        mentees: Number($('#mentees').value)||0,
+        interns: Number($('#interns').value)||0,
+        hires: Number($('#hires').value)||0,
+        notes: $('#notes').value.trim()
+      };
+
+      const existingIdx = state.engagements.findIndex(e=>e.id===payload.id);
+      if(existingIdx>-1){ state.engagements[existingIdx] = payload; }
+      else { state.engagements.push(payload); }
+
+      saveData(state);
+      ev.target.reset();
+      $('#editId').value = '';
+      $('#saveBtn').textContent = 'Save Entry';
+      refresh();
+    });
+
+    $('#resetBtn').addEventListener('click', ()=>{
+      $('#engagementForm').reset();
+      $('#editId').value = '';
+      $('#saveBtn').textContent = 'Save Entry';
+    });
+
+    // ---------------- Import / Export / Sample / Clear ----------------
+    $('#exportBtn').addEventListener('click', ()=>{
+      const blob = new Blob([JSON.stringify(state, null, 2)], {type:'application/json'});
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url; a.download = 'ifs_ieee_impact_data.json'; a.click();
+      URL.revokeObjectURL(url);
+    });
+
+    $('#importFile').addEventListener('change', (ev)=>{
+      const f = ev.target.files[0]; if(!f) return;
+      const reader = new FileReader();
+      reader.onload = () => {
+        try{
+          const obj = JSON.parse(reader.result);
+          if(!obj || !Array.isArray(obj.engagements)) throw new Error('Invalid format');
+          state = obj; saveData(state); populateYearFilter(); refresh();
+        }catch(err){ alert('Import failed: ' + err.message); }
+      };
+      reader.readAsText(f);
+      ev.target.value = '';
+    });
+
+    $('#clearDataBtn').addEventListener('click', ()=>{
+      if(confirm('This will remove all saved entries from this browser. Continue?')){
+        state = { engagements: [] }; saveData(state); populateYearFilter(); refresh();
+      }
+    });
+
+    $('#loadSampleBtn').addEventListener('click', ()=>{
+      if(!confirm('Load sample data? This will append to your current entries.')) return;
+      const sample = makeSampleData();
+      state.engagements.push(...sample);
+      saveData(state); populateYearFilter(); refresh();
+    });
+
+    // ---------------- Filters listeners ----------------
+    [filterYear, filterLevel, filterCategory].forEach(el=> el.addEventListener('change', ()=>{
+      renderKPIs(); createOrUpdateCharts(); renderTable();
+    }));
+
+    // ---------------- Sample Data ----------------
+    function makeSampleData(){
+      const nowY = new Date().getFullYear();
+      const rows = [
+        {d:`${nowY}-02-18`, lv:'Student Branch', cat:'Event', t:'Path to Internship – Workshop', org:'SLIIT', loc:'Malabe', p:260, s:2, m:3, f:250000, me:120, i:10, h:4},
+        {d:`${nowY}-03-10`, lv:'Sri Lanka Section', cat:'Funding', t:'IEEE Education Week Support', org:'IEEE SL', loc:'Colombo', p:0, s:0, m:0, f:1500000, me:0, i:0, h:0},
+        {d:`${nowY}-04-05`, lv:'Student Branch', cat:'Mentoring', t:'Young Protégé – Mentoring Circle', org:'YPSL', loc:'Colombo', p:80, s:0, m:6, f:0, me:80, i:8, h:3},
+        {d:`${nowY}-05-22`, lv:'IEEE Global', cat:'Speaker Session', t:'R10 YP Hustle Stories', org:'R10 YP', loc:'APAC (Online)', p:420, s:1, m:0, f:0, me:0, i:0, h:0},
+        {d:`${nowY}-06-07`, lv:'Sri Lanka Section', cat:'Event', t:'Industry Connect – Rootcode', org:'YPSL', loc:'Colombo', p:180, s:3, m:2, f:400000, me:60, i:6, h:2},
+        {d:`${nowY}-07-24`, lv:'Student Branch', cat:'Event', t:'AI Community Talk – July', org:'UoJ', loc:'Jaffna', p:150, s:1, m:1, f:120000, me:40, i:5, h:1},
+        {d:`${nowY-1}-10-12`, lv:'IEEE Global', cat:'Partnership', t:'R10 SYWL – Collaboration', org:'R10', loc:'Tokyo', p:0, s:0, m:0, f:0, me:0, i:0, h:0},
+        {d:`${nowY-1}-11-02`, lv:'Sri Lanka Section', cat:'Event', t:'Dream Planner Awareness', org:'IEEE SL', loc:'Colombo', p:220, s:2, m:1, f:300000, me:70, i:7, h:2}
+      ];
+      return rows.map(x=>({
+        id: uid(), title:x.t, date:x.d, level:x.lv, category:x.cat, org:x.org, location:x.loc,
+        participants:x.p, speakers:x.s, mentors:x.m, funding:x.f, mentees:x.me, interns:x.i, hires:x.h, notes:''
+      }));
+    }
+
+    // ---------------- Bootstrap ----------------
+    function refresh(){ renderKPIs(); createOrUpdateCharts(); renderTable(); }
+    function init(){ populateYearFilter(); if(!state.engagements.length){ /* optional: preload sample */ } refresh(); }
+    init();
+  </script>
+</body>
+</html>
