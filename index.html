@@ -81,8 +81,9 @@
     .pill{display:inline-flex; gap:8px; align-items:center; font-size:12px; padding:6px 10px; border:1px solid rgba(255,255,255,.14); border-radius:999px}
     .people-list{display:grid; grid-template-columns:1fr 120px 1fr 1fr; gap:10px; margin-top:8px}
     .people-list .hdr{font-size:12px; color:var(--text-dim)}
-    .people-list .row{display:contents}
-    .people-list .row > div{padding:8px 0; border-bottom:1px solid rgba(255,255,255,.06)}
+    .people-list > div{padding:8px 0; border-bottom:1px solid rgba(255,255,255,.06)}
+    /* Critical fix: allow inserted cells to participate in the grid */
+    #evtPeople{display:contents}
   </style>
 </head>
 <body>
@@ -226,7 +227,7 @@
 
           <div class="footer">
             <div>Data persists locally (browser). Export & import JSON to collaborate.</div>
-            <div>Built for IFS × IEEE • v2.0</div>
+            <div>Built for IFS × IEEE • v2.1</div>
           </div>
         </div>
       </section>
@@ -329,7 +330,7 @@
       </section>
     </div>
 
-    <div class="footer"><div>Data persists locally.</div><div>IFS × IEEE v2.0</div></div>
+    <div class="footer"><div>Data persists locally.</div><div>IFS × IEEE v2.1</div></div>
   </div>
 
   <!-- Event Details Modal -->
@@ -351,11 +352,12 @@
         </div>
         <p style="margin-top:10px" id="evtNotes"></p>
         <h4 style="margin:8px 0 6px">IFS Participants</h4>
-        <div class="people-list">
+        <div class="people-list" id="peopleGrid">
           <div class="hdr">Name</div>
           <div class="hdr">Role</div>
           <div class="hdr">Position / Team</div>
           <div class="hdr">Email</div>
+          <!-- Cells will be injected as direct grid children below using #evtPeople with display:contents -->
           <div id="evtPeople"></div>
         </div>
       </div>
@@ -394,7 +396,6 @@
     const saveData = (d) => localStorage.setItem(KEY, JSON.stringify(d));
     let state = migrate(loadData());
 
-    // ---------------- Migration (v1 -> v2 adds people[]) ----------------
     function migrate(d){
       if(!d || !Array.isArray(d.engagements)) return { engagements: [] };
       d.engagements = d.engagements.map(e => ({ people:[], ...e, people: Array.isArray(e.people) ? e.people : [] }));
@@ -599,9 +600,8 @@
       list: [],
       render(){
         peopleEditorEl.innerHTML = '';
-        // Header
         ['Full Name','Role','Position / Team','Email',''].forEach(text=>{
-          const d=document.createElement('div'); d.className = text ? 'hdr' : 'hdr'; d.textContent = text; peopleEditorEl.appendChild(d);
+          const d=document.createElement('div'); d.className = 'hdr'; d.textContent = text; peopleEditorEl.appendChild(d);
         });
         if(!this.list || !this.list.length){
           const empty = document.createElement('div'); empty.style.gridColumn = '1 / -1'; empty.style.color = 'var(--text-dim)'; empty.style.padding = '6px 0'; empty.textContent = 'No people added yet.'; peopleEditorEl.appendChild(empty); return;
@@ -646,7 +646,6 @@
       saveData(state);
       ev.target.reset(); $('#editId').value=''; $('#saveBtn').textContent='Save Entry'; peopleEditor.load([]);
       populateYearFilter(); populateOrgFilter(); refresh();
-      // Return to dashboard for immediate view
       document.querySelector('[data-tab="dashboard"]').click();
     });
 
@@ -691,15 +690,18 @@
       $('#evtOrg').textContent = `Host: ${e.org || '—'}`;
       $('#evtFunding').textContent = `Funding: ${fmtMoneyShort(e.funding||0)}`;
       $('#evtNotes').textContent = e.notes || '';
+
       const people = Array.isArray(e.people) ? e.people : [];
-      const peopleHTML = people.length ? people.map(p=>`
-          <div class="row"></div>
-          <div>${p.name||''}</div>
-          <div>${p.role||''}</div>
-          <div>${p.position||''}</div>
-          <div>${p.email||''}</div>
-        `).join('') : `<div style="grid-column:1/-1; color:var(--text-dim); padding:8px 0">No IFS participants added.</div>`;
-      $('#evtPeople').innerHTML = peopleHTML;
+      const grid = $('#evtPeople');
+      grid.innerHTML = people.length
+        ? people.map(p => `
+            <div>${p.name||''}</div>
+            <div>${p.role||''}</div>
+            <div>${p.position||''}</div>
+            <div>${p.email||''}</div>
+          `).join('')
+        : `<div style="grid-column:1/-1; color:var(--text-dim); padding:8px 0">No IFS participants added.</div>`;
+
       modal.classList.add('open');
     }
 
