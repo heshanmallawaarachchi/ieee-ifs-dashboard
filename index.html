@@ -10,40 +10,26 @@
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   <style>
     :root{
-      --bg:#0b1020;
-      --card:#121935;
-      --muted:#1a2347;
-      --accent:#7dd3fc; /* sky-300 */
-      --accent-2:#a78bfa; /* violet-400 */
-      --good:#34d399; /* emerald-400 */
-      --warn:#f59e0b; /* amber-500 */
-      --bad:#fb7185;  /* rose-400 */
-      --text:#e5e7eb; /* zinc-200 */
-      --text-dim:#9ca3af; /* gray-400 */
-      --shadow: 0 10px 30px rgba(0,0,0,.35);
-      --radius: 18px;
+      --bg:#0b1020; --card:#121935; --muted:#1a2347;
+      --accent:#7dd3fc; --accent-2:#a78bfa; --good:#34d399; --warn:#f59e0b; --bad:#fb7185;
+      --text:#e5e7eb; --text-dim:#9ca3af; --shadow:0 10px 30px rgba(0,0,0,.35); --radius:18px;
     }
     *{box-sizing:border-box}
     html,body{height:100%}
-    body{
-      margin:0; font-family:Inter,system-ui,-apple-system,Segoe UI,Roboto,Arial; color:var(--text); background: radial-gradient(1200px 800px at 10% -10%, #1a2560 0%, transparent 60%),
-      radial-gradient(1200px 800px at 110% 10%, #222a6b 0%, transparent 60%), var(--bg);
-    }
+    body{margin:0; font-family:Inter,system-ui,-apple-system,Segoe UI,Roboto,Arial; color:var(--text);
+      background: radial-gradient(1200px 800px at 10% -10%, #1a2560 0%, transparent 60%),
+      radial-gradient(1200px 800px at 110% 10%, #222a6b 0%, transparent 60%), var(--bg);}
     .wrap{max-width:1280px; margin-inline:auto; padding:28px}
-    header{
-      display:flex; gap:18px; align-items:center; justify-content:space-between; margin-bottom:18px;
-    }
+    header{display:flex; gap:18px; align-items:center; justify-content:space-between; margin-bottom:18px}
     .title{display:flex; gap:14px; align-items:center}
     .logo{width:44px; height:44px; border-radius:12px; background:linear-gradient(135deg,var(--accent),var(--accent-2)); box-shadow:var(--shadow)}
     h1{margin:0; font-size:22px; letter-spacing:.3px}
     .sub{color:var(--text-dim); font-size:12px}
 
-    .layout{
-      display:grid; grid-template-columns: 360px 1fr; gap:22px; align-items:start;
-    }
-    @media (max-width: 1024px){.layout{grid-template-columns:1fr}}
+    .layout{display:grid; grid-template-columns:360px 1fr; gap:22px; align-items:start}
+    @media (max-width:1024px){.layout{grid-template-columns:1fr}}
 
-    .card{background: linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.0));
+    .card{background:linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.0));
       border:1px solid rgba(255,255,255,.06); backdrop-filter: blur(6px); border-radius:var(--radius); box-shadow:var(--shadow)}
     .card .hd{display:flex; align-items:center; justify-content:space-between; padding:16px 18px; border-bottom:1px solid rgba(255,255,255,.06)}
     .card .bd{padding:16px 18px}
@@ -51,26 +37,24 @@
     .form-grid{display:grid; grid-template-columns:1fr 1fr; gap:12px}
     .form-grid .full{grid-column:1/-1}
     label{display:block; font-size:12px; color:var(--text-dim); margin-bottom:6px}
-    input,select,textarea{
-      width:100%; padding:10px 12px; background:var(--muted); color:var(--text); border:1px solid rgba(255,255,255,.07); border-radius:12px; outline:none;
-    }
+    input,select,textarea{width:100%; padding:10px 12px; background:var(--muted); color:var(--text); border:1px solid rgba(255,255,255,.07); border-radius:12px; outline:none}
     textarea{min-height:64px; resize:vertical}
     .btn{display:inline-flex; align-items:center; gap:8px; padding:10px 14px; border-radius:12px; border:1px solid rgba(255,255,255,.08); background:linear-gradient(135deg,rgba(125,211,252,.14), rgba(167,139,250,.14)); color:var(--text); cursor:pointer}
     .btn:hover{filter:brightness(1.08)}
     .btn.ghost{background:transparent}
     .btn-bar{display:flex; gap:10px; flex-wrap:wrap}
 
-    .kpis{display:grid; grid-template-columns: repeat(4, minmax(0,1fr)); gap:14px}
-    @media (max-width: 900px){.kpis{grid-template-columns: repeat(2, minmax(0,1fr))}}
+    .kpis{display:grid; grid-template-columns:repeat(4, minmax(0,1fr)); gap:14px}
+    @media (max-width:900px){.kpis{grid-template-columns:repeat(2, minmax(0,1fr))}}
     .kpi{padding:16px; border-radius:16px; background:linear-gradient(180deg, rgba(255,255,255,0.03), rgba(255,255,255,0.02)); border:1px solid rgba(255,255,255,.06)}
     .kpi .lbl{font-size:12px; color:var(--text-dim)}
     .kpi .val{font-size:26px; font-weight:800; margin-top:6px}
     .kpi .note{font-size:11px; color:var(--text-dim)}
 
-    .charts{display:grid; grid-template-columns: 1fr 1fr; gap:16px; margin-top:16px}
-    @media (max-width: 1200px){.charts{grid-template-columns:1fr}}
+    .charts{display:grid; grid-template-columns:1fr 1fr; gap:16px; margin-top:16px}
+    @media (max-width:1200px){.charts{grid-template-columns:1fr}}
 
-    table{width:100%; border-collapse: collapse; font-size:13px}
+    table{width:100%; border-collapse:collapse; font-size:13px}
     thead th{color:var(--text-dim); font-weight:600; text-align:left; padding:10px; border-bottom:1px solid rgba(255,255,255,.06)}
     tbody td{padding:10px; border-bottom:1px solid rgba(255,255,255,.04)}
     tbody tr:hover{background:rgba(255,255,255,.02)}
@@ -79,10 +63,20 @@
     .lvl-SEC{background:rgba(167,139,250,.12)}
     .lvl-GLB{background:rgba(52,211,153,.12)}
 
-    .filters{display:grid; grid-template-columns: repeat(3, minmax(0,1fr)); gap:10px}
+    .filters{display:grid; grid-template-columns:repeat(4,minmax(0,1fr)); gap:10px}
 
     .footer{margin-top:14px; display:flex; justify-content:space-between; align-items:center; color:var(--text-dim); font-size:12px}
-    .file-input{display:inline-flex; gap:8px; align-items:center}
+
+    /* Modal */
+    .modal{position:fixed; inset:0; display:none; align-items:center; justify-content:center; background:rgba(0,0,0,.5); z-index:50}
+    .modal.open{display:flex}
+    .modal .panel{width:min(860px,92vw); max-height:90vh; overflow:auto; background:linear-gradient(180deg, rgba(255,255,255,0.05), rgba(255,255,255,0.02)); border:1px solid rgba(255,255,255,.08); border-radius:18px; box-shadow:var(--shadow); padding:16px}
+    .modal h3{margin:0 0 8px 0}
+    .pill{display:inline-flex; gap:8px; align-items:center; font-size:12px; padding:6px 10px; border:1px solid rgba(255,255,255,.14); border-radius:999px}
+    .people-list{display:grid; grid-template-columns:1fr 120px 1fr 120px; gap:10px; margin-top:8px}
+    .people-list .hdr{font-size:12px; color:var(--text-dim)}
+    .people-list .row{display:contents}
+    .people-list .row > div{padding:8px 0; border-bottom:1px solid rgba(255,255,255,.06)}
   </style>
 </head>
 <body>
@@ -99,7 +93,7 @@
         <button class="btn" id="loadSampleBtn" title="Load sample data">Load Sample Data</button>
         <button class="btn ghost" id="clearDataBtn" title="Clear saved data">Clear Data</button>
         <button class="btn ghost" id="exportBtn" title="Export data as JSON">Export JSON</button>
-        <label class="file-input btn ghost" title="Import data JSON">
+        <label class="btn ghost" title="Import data JSON">
           <input id="importFile" type="file" accept="application/json" style="display:none" />
           <span>Import JSON</span>
         </label>
@@ -112,7 +106,7 @@
         <div class="hd">
           <div>
             <strong id="formHd">Add / Edit Engagement</strong>
-            <div class="sub">Manually enter each IEEE activity with IFS involvement</div>
+            <div class="sub">Enter each IEEE activity with IFS involvement</div>
           </div>
         </div>
         <div class="bd">
@@ -129,8 +123,8 @@
               <label for="level">Engagement Level</label>
               <select id="level" required>
                 <option value="Student Branch">Student Branch</option>
-                <option value="Section">Sri Lanka Section</option>
-                <option value="Global">IEEE Global</option>
+                <option value="Sri Lanka Section">Sri Lanka Section</option>
+                <option value="IEEE Global">IEEE Global</option>
               </select>
             </div>
             <div>
@@ -144,7 +138,7 @@
               </select>
             </div>
             <div>
-              <label for="org">Host (University / Org)</label>
+              <label for="org">University / Host</label>
               <input id="org" placeholder="e.g., SLIIT, UoJ, R10 YP" />
             </div>
             <div>
@@ -156,11 +150,11 @@
               <input id="participants" type="number" min="0" step="1" value="0" />
             </div>
             <div>
-              <label for="speakers">IFS Speakers</label>
+              <label for="speakers">IFS Speakers (count)</label>
               <input id="speakers" type="number" min="0" step="1" value="0" />
             </div>
             <div>
-              <label for="mentors">IFS Mentors</label>
+              <label for="mentors">IFS Mentors (count)</label>
               <input id="mentors" type="number" min="0" step="1" value="0" />
             </div>
             <div>
@@ -183,6 +177,16 @@
               <label for="notes">Notes</label>
               <textarea id="notes" placeholder="Key outcomes, links, quotes, recognition, etc."></textarea>
             </div>
+
+            <!-- People (IFS employees) -->
+            <div class="full" style="margin-top:4px">
+              <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:6px">
+                <label style="margin:0">IFS Participants (Speakers / Mentors)</label>
+                <button class="btn ghost" type="button" id="addPersonBtn">+ Add Person</button>
+              </div>
+              <div id="peopleEditor" class="form-grid" style="grid-template-columns:1fr 1fr 1fr 1fr auto"></div>
+            </div>
+
             <div class="full btn-bar">
               <button class="btn" type="submit" id="saveBtn">Save Entry</button>
               <button class="btn ghost" type="button" id="resetBtn">Reset</button>
@@ -197,9 +201,9 @@
         <div class="hd">
           <div>
             <strong id="dashHd">Live Dashboard</strong>
-            <div class="sub">Auto‑updates as you add data. Filters apply to all widgets.</div>
+            <div class="sub">Filters apply to all widgets • Click a university to drill down</div>
           </div>
-          <div class="filters" style="max-width:560px">
+          <div class="filters" style="max-width:760px">
             <div>
               <label for="filterYear">Year</label>
               <select id="filterYear"></select>
@@ -224,6 +228,10 @@
                 <option>Partnership</option>
               </select>
             </div>
+            <div>
+              <label for="filterOrg">University / Host</label>
+              <select id="filterOrg"></select>
+            </div>
           </div>
         </div>
         <div class="bd">
@@ -233,6 +241,26 @@
             <div class="kpi"><div class="lbl">IFS Speakers & Mentors</div><div class="val" id="kpiSM">0</div><div class="note">Sum of speakers + mentors</div></div>
             <div class="kpi"><div class="lbl">Total Funding (LKR)</div><div class="val" id="kpiFunding">0</div><div class="note" id="kpiFundingNote">Across filtered data</div></div>
             <div class="kpi"><div class="lbl">Total Reach</div><div class="val" id="kpiReach">0</div><div class="note">Participants / audience</div></div>
+          </div>
+
+          <!-- University Tracker -->
+          <div class="card" style="margin-top:16px">
+            <div class="hd" style="padding:12px 16px"><strong>Engagements by University / Host</strong><div class="sub">Click a row to filter by that university</div></div>
+            <div class="bd" style="padding:0">
+              <table id="orgTable" aria-label="Universities table">
+                <thead>
+                  <tr>
+                    <th>University / Host</th>
+                    <th>Events</th>
+                    <th>Participants</th>
+                    <th>Speakers</th>
+                    <th>Mentors</th>
+                    <th>Funding (LKR)</th>
+                  </tr>
+                </thead>
+                <tbody></tbody>
+              </table>
+            </div>
           </div>
 
           <!-- Charts -->
@@ -257,18 +285,20 @@
 
           <!-- Recent Entries Table -->
           <div class="card" style="margin-top:16px">
-            <div class="hd" style="padding:12px 16px"><strong>Recent Entries</strong><div class="sub">Click a row to edit • Use 🗑 to delete</div></div>
+            <div class="hd" style="padding:12px 16px"><strong>Events</strong><div class="sub">Click a row to edit • Use 🗑 to delete • Use 🔎 to view details</div></div>
             <div class="bd" style="padding:0">
               <table id="entriesTable" aria-label="Recent engagements">
                 <thead>
                   <tr>
                     <th>Date</th>
                     <th>Title</th>
+                    <th>University / Host</th>
                     <th>Level</th>
                     <th>Category</th>
                     <th>Participants</th>
                     <th>Speakers</th>
                     <th>Mentors</th>
+                    <th>People</th>
                     <th>Funding (LKR)</th>
                     <th>Actions</th>
                   </tr>
@@ -280,10 +310,41 @@
 
           <div class="footer">
             <div>Data persists locally (browser). Export & import JSON to collaborate.</div>
-            <div>Built for IFS × IEEE • v1.0</div>
+            <div>Built for IFS × IEEE • v1.1</div>
           </div>
         </div>
       </section>
+    </div>
+  </div>
+
+  <!-- Event Details Modal -->
+  <div class="modal" id="eventModal" aria-hidden="true" aria-label="Event details dialog">
+    <div class="panel">
+      <div style="display:flex; justify-content:space-between; align-items:center; gap:12px">
+        <div>
+          <h3 id="evtTitle">Event Title</h3>
+          <div class="sub" id="evtMeta"></div>
+        </div>
+        <button class="btn ghost" id="closeModalBtn" aria-label="Close">✕</button>
+      </div>
+      <div style="margin-top:10px">
+        <div style="display:flex; gap:8px; flex-wrap:wrap">
+          <span class="pill" id="evtLevel"></span>
+          <span class="pill" id="evtCategory"></span>
+          <span class="pill" id="evtOrg"></span>
+          <span class="pill" id="evtFunding"></span>
+        </div>
+        <p style="margin-top:10px" id="evtNotes"></p>
+
+        <h4 style="margin:8px 0 6px">IFS Participants</h4>
+        <div class="people-list">
+          <div class="hdr">Name</div>
+          <div class="hdr">Role</div>
+          <div class="hdr">Position / Team</div>
+          <div class="hdr">Email</div>
+          <div id="evtPeople"></div>
+        </div>
+      </div>
     </div>
   </div>
 
@@ -302,42 +363,47 @@
     };
 
     // ---------------- Storage ----------------
-    const KEY = 'ifs_ieee_impact_data_v1';
-    const loadData = () => {
-      try { return JSON.parse(localStorage.getItem(KEY)) || { engagements: [] }; }
-      catch { return { engagements: [] }; }
-    };
+    const KEY = 'ifs_ieee_impact_data_v2';
+    const loadData = () => { try { return JSON.parse(localStorage.getItem(KEY)) || { engagements: [] }; } catch { return { engagements: [] }; } };
     const saveData = (d) => localStorage.setItem(KEY, JSON.stringify(d));
+    let state = migrate(loadData());
 
-    let state = loadData();
+    // ---------------- Migration (v1 -> v2 adds people[]) ----------------
+    function migrate(d){
+      if(!d || !Array.isArray(d.engagements)) return { engagements: [] };
+      d.engagements = d.engagements.map(e => ({ people:[], ...e, people: Array.isArray(e.people) ? e.people : [] }));
+      return d;
+    }
 
     // ---------------- Filters ----------------
     const filterYear = $('#filterYear');
     const filterLevel = $('#filterLevel');
     const filterCategory = $('#filterCategory');
+    const filterOrg = $('#filterOrg');
 
     function populateYearFilter(){
-      const years = new Set(state.engagements.map(e => new Date(e.date).getFullYear()));
+      const years = new Set(state.engagements.map(e => new Date(e.date).getFullYear()).filter(x=>!isNaN(x)));
       const yearList = Array.from(years).sort((a,b)=>b-a);
       filterYear.innerHTML = '<option>All</option>' + yearList.map(y=>`<option>${y}</option>`).join('');
+    }
+    function populateOrgFilter(){
+      const orgs = new Set(state.engagements.map(e => (e.org||'').trim()).filter(Boolean));
+      const list = Array.from(orgs).sort((a,b)=>a.localeCompare(b));
+      filterOrg.innerHTML = '<option>All</option>' + list.map(o=>`<option>${o}</option>`).join('');
     }
 
     function applyFilters(list){
       const y = filterYear.value;
       const lv = filterLevel.value;
       const cat = filterCategory.value;
+      const org = filterOrg.value;
       return list.filter(e => {
         const okY = (y==='All') || (new Date(e.date).getFullYear().toString()===y);
-        const okL = (lv==='All') || (e.level===normalizeLevel(lv));
+        const okL = (lv==='All') || (e.level===lv);
         const okC = (cat==='All') || (e.category===cat);
-        return okY && okL && okC;
+        const okO = (org==='All') || ((e.org||'')===org);
+        return okY && okL && okC && okO;
       });
-    }
-
-    function normalizeLevel(lv){
-      if(lv==='Sri Lanka Section') return 'Sri Lanka Section';
-      if(lv==='IEEE Global') return 'IEEE Global';
-      return lv; // Student Branch or already normalized
     }
 
     // ---------------- KPIs ----------------
@@ -380,18 +446,13 @@
       });
       return { levels, outCount, outFund };
     }
-
     function dataYoY(list){
       const map = new Map();
-      list.forEach(e=>{
-        const y = new Date(e.date).getFullYear();
-        map.set(y, (map.get(y)||0) + 1);
-      });
+      list.forEach(e=>{ const y = new Date(e.date).getFullYear(); if(!isNaN(y)) map.set(y, (map.get(y)||0) + 1); });
       const years = Array.from(map.keys()).sort((a,b)=>a-b);
       const vals = years.map(y=>map.get(y));
       return { years, vals };
     }
-
     function dataPipeline(list){
       const sums = list.reduce((acc,e)=>{
         acc.mentees += Number(e.mentees)||0;
@@ -408,208 +469,230 @@
       const yoy = dataYoY(list);
       const pipeline = dataPipeline(list);
 
-      // Events by Level (Bar)
-      const beCtx = $('#barEvents');
-      if(barEventsChart) barEventsChart.destroy();
-      barEventsChart = new Chart(beCtx, {
-        type:'bar',
-        data:{ labels: levels, datasets:[{ label:'Events', data: outCount }] },
-        options:{ responsive:true, maintainAspectRatio:false, scales:{ y:{ beginAtZero:true } } }
-      });
+      const beCtx = $('#barEvents'); if(barEventsChart) barEventsChart.destroy();
+      barEventsChart = new Chart(beCtx, { type:'bar', data:{ labels: levels, datasets:[{ label:'Events', data: outCount }] }, options:{ responsive:true, maintainAspectRatio:false, scales:{ y:{ beginAtZero:true } } } });
 
-      // Funding by Level (Pie)
-      const pfCtx = $('#pieFunding');
-      if(pieFundingChart) pieFundingChart.destroy();
-      pieFundingChart = new Chart(pfCtx, {
-        type:'pie',
-        data:{ labels: levels, datasets:[{ data: outFund }] },
-        options:{ responsive:true, maintainAspectRatio:false }
-      });
+      const pfCtx = $('#pieFunding'); if(pieFundingChart) pieFundingChart.destroy();
+      pieFundingChart = new Chart(pfCtx, { type:'pie', data:{ labels: levels, datasets:[{ data: outFund }] }, options:{ responsive:true, maintainAspectRatio:false } });
 
-      // YoY (Line)
-      const lyCtx = $('#lineYoY');
-      if(lineYoYChart) lineYoYChart.destroy();
-      lineYoYChart = new Chart(lyCtx, {
-        type:'line',
-        data:{ labels: yoy.years, datasets:[{ label:'Engagements', data: yoy.vals, fill:false, tension:.2 }] },
-        options:{ responsive:true, maintainAspectRatio:false, scales:{ y:{ beginAtZero:true } } }
-      });
+      const lyCtx = $('#lineYoY'); if(lineYoYChart) lineYoYChart.destroy();
+      lineYoYChart = new Chart(lyCtx, { type:'line', data:{ labels: yoy.years, datasets:[{ label:'Engagements', data: yoy.vals, fill:false, tension:.2 }] }, options:{ responsive:true, maintainAspectRatio:false, scales:{ y:{ beginAtZero:true } } } });
 
-      // Pipeline (Bar)
-      const plCtx = $('#barPipeline');
-      if(barPipelineChart) barPipelineChart.destroy();
-      barPipelineChart = new Chart(plCtx, {
-        type:'bar',
-        data:{ labels:['Mentees','Interns','Hires'], datasets:[{ label:'Count', data:[pipeline.mentees, pipeline.interns, pipeline.hires] }] },
-        options:{ responsive:true, maintainAspectRatio:false, scales:{ y:{ beginAtZero:true } } }
+      const plCtx = $('#barPipeline'); if(barPipelineChart) barPipelineChart.destroy();
+      barPipelineChart = new Chart(plCtx, { type:'bar', data:{ labels:['Mentees','Interns','Hires'], datasets:[{ label:'Count', data:[pipeline.mentees, pipeline.interns, pipeline.hires] }] }, options:{ responsive:true, maintainAspectRatio:false, scales:{ y:{ beginAtZero:true } } } });
+    }
+
+    // ---------------- University Tracker ----------------
+    const orgTableBody = $('#orgTable tbody');
+    function renderOrgTable(){
+      const list = applyFilters(state.engagements);
+      const map = new Map();
+      list.forEach(e=>{
+        const k = (e.org||'Unspecified');
+        if(!map.has(k)) map.set(k, { events:0, participants:0, speakers:0, mentors:0, funding:0 });
+        const r = map.get(k);
+        r.events += ['Event','Speaker Session','Mentoring'].includes(e.category) ? 1 : 0;
+        r.participants += Number(e.participants)||0;
+        r.speakers += Number(e.speakers)||0;
+        r.mentors += Number(e.mentors)||0;
+        r.funding += Number(e.funding)||0;
       });
+      const rows = Array.from(map.entries()).sort((a,b)=>b[1].events - a[1].events).map(([org, r])=>`
+        <tr data-org="${org}">
+          <td>${org}</td>
+          <td>${fmtNum(r.events)}</td>
+          <td>${fmtNum(r.participants)}</td>
+          <td>${fmtNum(r.speakers)}</td>
+          <td>${fmtNum(r.mentors)}</td>
+          <td>${fmtNum(r.funding)}</td>
+        </tr>`).join('');
+      orgTableBody.innerHTML = rows || `<tr><td colspan="6" style="text-align:center; color:var(--text-dim); padding:18px">No data yet.</td></tr>`;
+
+      orgTableBody.querySelectorAll('tr').forEach(tr => tr.addEventListener('click', ()=>{
+        const org = tr.dataset.org; filterOrg.value = org; refreshFiltered();
+      }));
     }
 
     // ---------------- Table ----------------
     const tableBody = $('#entriesTable tbody');
-
     function renderTable(){
-      const list = [...state.engagements].sort((a,b)=> new Date(b.date) - new Date(a.date));
+      const list = [...applyFilters(state.engagements)].sort((a,b)=> new Date(b.date) - new Date(a.date));
       const rows = list.map(e=>{
         const levTag = e.level==='Student Branch' ? 'lvl-SB' : (e.level==='Sri Lanka Section' ? 'lvl-SEC' : 'lvl-GLB');
+        const ppl = Array.isArray(e.people) ? e.people.length : 0;
         return `<tr data-id="${e.id}">
-          <td>${new Date(e.date).toLocaleDateString()}</td>
+          <td>${e.date ? new Date(e.date).toLocaleDateString() : ''}</td>
           <td>${e.title || ''}</td>
+          <td>${e.org || ''}</td>
           <td><span class="tag ${levTag}">${e.level}</span></td>
           <td>${e.category}</td>
           <td>${fmtNum(e.participants)}</td>
           <td>${fmtNum(e.speakers)}</td>
           <td>${fmtNum(e.mentors)}</td>
+          <td>${fmtNum(ppl)}</td>
           <td>${fmtNum(e.funding)}</td>
-          <td><button class="btn ghost" data-act="del" title="Delete">🗑</button></td>
+          <td>
+            <button class="btn ghost" data-act="view" title="View">🔎</button>
+            <button class="btn ghost" data-act="del" title="Delete">🗑</button>
+          </td>
         </tr>`
       }).join('');
-      tableBody.innerHTML = rows || `<tr><td colspan="9" style="text-align:center; color:var(--text-dim); padding:18px">No entries yet. Add your first engagement on the left.</td></tr>`;
+      tableBody.innerHTML = rows || `<tr><td colspan="11" style="text-align:center; color:var(--text-dim); padding:18px">No entries yet. Add your first engagement on the left.</td></tr>`;
 
-      // Row interactions
       tableBody.querySelectorAll('tr').forEach(row=>{
         row.addEventListener('click', (ev)=>{
-          if(ev.target && ev.target.dataset.act === 'del'){
-            const id = row.dataset.id; delEntry(id); ev.stopPropagation(); return;
-          }
-          const id = row.dataset.id; editEntry(id);
+          const id = row.dataset.id;
+          if(ev.target && ev.target.dataset.act === 'del'){ delEntry(id); ev.stopPropagation(); return; }
+          if(ev.target && ev.target.dataset.act === 'view'){ openEventModal(id); ev.stopPropagation(); return; }
+          editEntry(id);
         });
       });
     }
 
     function delEntry(id){
       const idx = state.engagements.findIndex(e=>e.id===id);
-      if(idx>-1){
-        if(confirm('Delete this entry?')){
-          state.engagements.splice(idx,1);
-          saveData(state); refresh();
-        }
-      }
+      if(idx>-1 && confirm('Delete this entry?')){ state.engagements.splice(idx,1); saveData(state); refresh(); }
     }
 
     function editEntry(id){
-      const e = state.engagements.find(x=>x.id===id);
-      if(!e) return;
-      $('#editId').value = e.id;
-      $('#title').value = e.title||'';
-      $('#date').value = e.date || '';
-      $('#level').value = e.level;
-      $('#category').value = e.category;
-      $('#org').value = e.org||'';
-      $('#location').value = e.location||'';
-      $('#participants').value = e.participants||0;
-      $('#speakers').value = e.speakers||0;
-      $('#mentors').value = e.mentors||0;
-      $('#funding').value = e.funding||0;
-      $('#mentees').value = e.mentees||0;
-      $('#interns').value = e.interns||0;
-      $('#hires').value = e.hires||0;
-      $('#notes').value = e.notes||'';
-      $('#saveBtn').textContent = 'Update Entry';
-      window.scrollTo({ top: 0, behavior: 'smooth' });
+      const e = state.engagements.find(x=>x.id===id); if(!e) return;
+      $('#editId').value = e.id; $('#title').value = e.title||''; $('#date').value = e.date || '';
+      $('#level').value = e.level; $('#category').value = e.category; $('#org').value = e.org||''; $('#location').value = e.location||'';
+      $('#participants').value = e.participants||0; $('#speakers').value = e.speakers||0; $('#mentors').value = e.mentors||0;
+      $('#funding').value = e.funding||0; $('#mentees').value = e.mentees||0; $('#interns').value = e.interns||0; $('#hires').value = e.hires||0; $('#notes').value = e.notes||'';
+      peopleEditor.load(e.people || []);
+      $('#saveBtn').textContent = 'Update Entry'; window.scrollTo({ top: 0, behavior: 'smooth' });
     }
+
+    // ---------------- People Editor ----------------
+    const peopleEditorEl = $('#peopleEditor');
+    const peopleEditor = {
+      list: [],
+      render(){
+        if(!this.list || !this.list.length){ peopleEditorEl.innerHTML = `<div class="full" style="color:var(--text-dim); font-size:12px">No people added yet.</div>`; return; }
+        peopleEditorEl.innerHTML = '';
+        // Header
+        const hdrs = ['Full Name','Role','Position / Team','Email',''];
+        hdrs.forEach(h=>{ const d=document.createElement('div'); d.className='full'; });
+        // Rows
+        this.list.forEach((p,i)=>{
+          const name = document.createElement('input'); name.placeholder='e.g., Chamod Perera'; name.value=p.name||''; name.addEventListener('input',e=>this.list[i].name=e.target.value);
+          const role = document.createElement('select'); ['Speaker','Mentor'].forEach(r=>{ const o=document.createElement('option'); o.textContent=r; if(p.role===r) o.selected=true; role.appendChild(o); }); role.addEventListener('change',e=>this.list[i].role=e.target.value);
+          const pos = document.createElement('input'); pos.placeholder='e.g., QA Engineer'; pos.value=p.position||''; pos.addEventListener('input',e=>this.list[i].position=e.target.value);
+          const email = document.createElement('input'); email.placeholder='name@ifs.com'; email.value=p.email||''; email.addEventListener('input',e=>this.list[i].email=e.target.value);
+          const del = document.createElement('button'); del.type='button'; del.className='btn ghost'; del.textContent='🗑'; del.title='Remove'; del.addEventListener('click',()=>{ this.list.splice(i,1); this.render(); });
+
+          const row = document.createElement('div'); row.className='row';
+          const c1 = document.createElement('div'); c1.appendChild(name);
+          const c2 = document.createElement('div'); c2.appendChild(role);
+          const c3 = document.createElement('div'); c3.appendChild(pos);
+          const c4 = document.createElement('div'); c4.appendChild(email);
+          const c5 = document.createElement('div'); c5.appendChild(del);
+          peopleEditorEl.appendChild(row);
+          peopleEditorEl.appendChild(c1); peopleEditorEl.appendChild(c2); peopleEditorEl.appendChild(c3); peopleEditorEl.appendChild(c4); peopleEditorEl.appendChild(c5);
+        });
+      },
+      load(arr){ this.list = Array.isArray(arr) ? JSON.parse(JSON.stringify(arr)) : []; this.render(); },
+      values(){ return Array.isArray(this.list) ? this.list.filter(p=>p.name && p.role) : []; }
+    };
+
+    $('#addPersonBtn').addEventListener('click', ()=>{ peopleEditor.list.push({ name:'', role:'Speaker', position:'', email:'' }); peopleEditor.render(); });
 
     // ---------------- Form handling ----------------
     $('#engagementForm').addEventListener('submit', (ev)=>{
       ev.preventDefault();
       const payload = {
         id: $('#editId').value || uid(),
-        title: $('#title').value.trim(),
-        date: $('#date').value,
-        level: $('#level').value,
-        category: $('#category').value,
-        org: $('#org').value.trim(),
-        location: $('#location').value.trim(),
+        title: $('#title').value.trim(), date: $('#date').value,
+        level: $('#level').value, category: $('#category').value,
+        org: $('#org').value.trim(), location: $('#location').value.trim(),
         participants: Number($('#participants').value)||0,
-        speakers: Number($('#speakers').value)||0,
-        mentors: Number($('#mentors').value)||0,
+        speakers: Number($('#speakers').value)||0, mentors: Number($('#mentors').value)||0,
         funding: Number($('#funding').value)||0,
-        mentees: Number($('#mentees').value)||0,
-        interns: Number($('#interns').value)||0,
-        hires: Number($('#hires').value)||0,
-        notes: $('#notes').value.trim()
+        mentees: Number($('#mentees').value)||0, interns: Number($('#interns').value)||0, hires: Number($('#hires').value)||0,
+        notes: $('#notes').value.trim(),
+        people: peopleEditor.values()
       };
-
       const existingIdx = state.engagements.findIndex(e=>e.id===payload.id);
-      if(existingIdx>-1){ state.engagements[existingIdx] = payload; }
-      else { state.engagements.push(payload); }
-
+      if(existingIdx>-1) state.engagements[existingIdx] = payload; else state.engagements.push(payload);
       saveData(state);
-      ev.target.reset();
-      $('#editId').value = '';
-      $('#saveBtn').textContent = 'Save Entry';
-      refresh();
+      ev.target.reset(); $('#editId').value=''; $('#saveBtn').textContent='Save Entry'; peopleEditor.load([]);
+      populateYearFilter(); populateOrgFilter(); refresh();
     });
 
-    $('#resetBtn').addEventListener('click', ()=>{
-      $('#engagementForm').reset();
-      $('#editId').value = '';
-      $('#saveBtn').textContent = 'Save Entry';
-    });
+    $('#resetBtn').addEventListener('click', ()=>{ $('#engagementForm').reset(); $('#editId').value=''; $('#saveBtn').textContent='Save Entry'; peopleEditor.load([]); });
 
     // ---------------- Import / Export / Sample / Clear ----------------
     $('#exportBtn').addEventListener('click', ()=>{
       const blob = new Blob([JSON.stringify(state, null, 2)], {type:'application/json'});
-      const url = URL.createObjectURL(blob);
-      const a = document.createElement('a');
-      a.href = url; a.download = 'ifs_ieee_impact_data.json'; a.click();
-      URL.revokeObjectURL(url);
+      const url = URL.createObjectURL(blob); const a = document.createElement('a');
+      a.href = url; a.download = 'ifs_ieee_impact_data.json'; a.click(); URL.revokeObjectURL(url);
     });
 
     $('#importFile').addEventListener('change', (ev)=>{
-      const f = ev.target.files[0]; if(!f) return;
-      const reader = new FileReader();
-      reader.onload = () => {
-        try{
-          const obj = JSON.parse(reader.result);
-          if(!obj || !Array.isArray(obj.engagements)) throw new Error('Invalid format');
-          state = obj; saveData(state); populateYearFilter(); refresh();
-        }catch(err){ alert('Import failed: ' + err.message); }
-      };
-      reader.readAsText(f);
-      ev.target.value = '';
+      const f = ev.target.files[0]; if(!f) return; const reader = new FileReader();
+      reader.onload = () => { try{ const obj = JSON.parse(reader.result); if(!obj || !Array.isArray(obj.engagements)) throw new Error('Invalid format'); state = migrate(obj); saveData(state); populateYearFilter(); populateOrgFilter(); refresh(); }catch(err){ alert('Import failed: ' + err.message); } };
+      reader.readAsText(f); ev.target.value = '';
     });
 
-    $('#clearDataBtn').addEventListener('click', ()=>{
-      if(confirm('This will remove all saved entries from this browser. Continue?')){
-        state = { engagements: [] }; saveData(state); populateYearFilter(); refresh();
-      }
-    });
+    $('#clearDataBtn').addEventListener('click', ()=>{ if(confirm('This will remove all saved entries from this browser. Continue?')){ state = { engagements: [] }; saveData(state); populateYearFilter(); populateOrgFilter(); refresh(); } });
 
     $('#loadSampleBtn').addEventListener('click', ()=>{
       if(!confirm('Load sample data? This will append to your current entries.')) return;
-      const sample = makeSampleData();
-      state.engagements.push(...sample);
-      saveData(state); populateYearFilter(); refresh();
+      const sample = makeSampleData(); state.engagements.push(...sample); saveData(state); populateYearFilter(); populateOrgFilter(); refresh();
     });
 
     // ---------------- Filters listeners ----------------
-    [filterYear, filterLevel, filterCategory].forEach(el=> el.addEventListener('change', ()=>{
-      renderKPIs(); createOrUpdateCharts(); renderTable();
-    }));
+    function refreshFiltered(){ renderKPIs(); createOrUpdateCharts(); renderTable(); renderOrgTable(); }
+    ;[filterYear, filterLevel, filterCategory, filterOrg].forEach(el=> el.addEventListener('change', refreshFiltered));
+
+    // ---------------- Event Modal ----------------
+    const modal = $('#eventModal'); const closeModalBtn = $('#closeModalBtn');
+    closeModalBtn.addEventListener('click', ()=> modal.classList.remove('open'));
+    modal.addEventListener('click', (e)=>{ if(e.target===modal) modal.classList.remove('open'); });
+
+    function openEventModal(id){
+      const e = state.engagements.find(x=>x.id===id); if(!e) return;
+      $('#evtTitle').textContent = e.title || 'Untitled';
+      const meta = [ e.date ? new Date(e.date).toLocaleString() : '', e.location || '' ].filter(Boolean).join(' • ');
+      $('#evtMeta').textContent = meta;
+      $('#evtLevel').textContent = `Level: ${e.level}`;
+      $('#evtCategory').textContent = `Category: ${e.category}`;
+      $('#evtOrg').textContent = `Host: ${e.org || '—'}`;
+      $('#evtFunding').textContent = `Funding: ${fmtMoneyShort(e.funding||0)}`;
+      $('#evtNotes').textContent = e.notes || '';
+      const people = Array.isArray(e.people) ? e.people : [];
+      const peopleHTML = people.length ? people.map(p=>`
+          <div class="row"></div>
+          <div>${p.name||''}</div>
+          <div>${p.role||''}</div>
+          <div>${p.position||''}</div>
+          <div>${p.email||''}</div>
+        `).join('') : `<div style="grid-column:1/-1; color:var(--text-dim); padding:8px 0">No IFS participants added.</div>`;
+      $('#evtPeople').innerHTML = peopleHTML;
+      modal.classList.add('open');
+    }
 
     // ---------------- Sample Data ----------------
     function makeSampleData(){
       const nowY = new Date().getFullYear();
       const rows = [
-        {d:`${nowY}-02-18`, lv:'Student Branch', cat:'Event', t:'Path to Internship – Workshop', org:'SLIIT', loc:'Malabe', p:260, s:2, m:3, f:250000, me:120, i:10, h:4},
-        {d:`${nowY}-03-10`, lv:'Sri Lanka Section', cat:'Funding', t:'IEEE Education Week Support', org:'IEEE SL', loc:'Colombo', p:0, s:0, m:0, f:1500000, me:0, i:0, h:0},
-        {d:`${nowY}-04-05`, lv:'Student Branch', cat:'Mentoring', t:'Young Protégé – Mentoring Circle', org:'YPSL', loc:'Colombo', p:80, s:0, m:6, f:0, me:80, i:8, h:3},
-        {d:`${nowY}-05-22`, lv:'IEEE Global', cat:'Speaker Session', t:'R10 YP Hustle Stories', org:'R10 YP', loc:'APAC (Online)', p:420, s:1, m:0, f:0, me:0, i:0, h:0},
-        {d:`${nowY}-06-07`, lv:'Sri Lanka Section', cat:'Event', t:'Industry Connect – Rootcode', org:'YPSL', loc:'Colombo', p:180, s:3, m:2, f:400000, me:60, i:6, h:2},
-        {d:`${nowY}-07-24`, lv:'Student Branch', cat:'Event', t:'AI Community Talk – July', org:'UoJ', loc:'Jaffna', p:150, s:1, m:1, f:120000, me:40, i:5, h:1},
-        {d:`${nowY-1}-10-12`, lv:'IEEE Global', cat:'Partnership', t:'R10 SYWL – Collaboration', org:'R10', loc:'Tokyo', p:0, s:0, m:0, f:0, me:0, i:0, h:0},
-        {d:`${nowY-1}-11-02`, lv:'Sri Lanka Section', cat:'Event', t:'Dream Planner Awareness', org:'IEEE SL', loc:'Colombo', p:220, s:2, m:1, f:300000, me:70, i:7, h:2}
+        {d:`${nowY}-02-18`, lv:'Student Branch', cat:'Event', t:'Path to Internship – Workshop', org:'SLIIT', loc:'Malabe', p:260, s:2, m:3, f:250000, me:120, i:10, h:4, ppl:[{name:'Sheikh F.',role:'Speaker',position:'Senior Consultant',email:'sheikh@ifs.com'},{name:'Dilini P.',role:'Mentor',position:'QA Engineer',email:'dilini@ifs.com'}]},
+        {d:`${nowY}-03-10`, lv:'Sri Lanka Section', cat:'Funding', t:'IEEE Education Week Support', org:'IEEE SL', loc:'Colombo', p:0, s:0, m:0, f:1500000, me:0, i:0, h:0, ppl:[]},
+        {d:`${nowY}-04-05`, lv:'Student Branch', cat:'Mentoring', t:'Young Protégé – Mentoring Circle', org:'YPSL', loc:'Colombo', p:80, s:0, m:6, f:0, me:80, i:8, h:3, ppl:[{name:'Heshan M.',role:'Mentor',position:'Software Engineer',email:'heshan@ifs.com'}]},
+        {d:`${nowY}-05-22`, lv:'IEEE Global', cat:'Speaker Session', t:'R10 YP Hustle Stories', org:'R10 YP', loc:'APAC (Online)', p:420, s:1, m:0, f:0, me:0, i:0, h:0, ppl:[{name:'Patrik S.',role:'Speaker',position:'Principal Architect',email:'patrik@ifs.com'}]},
+        {d:`${nowY}-06-07`, lv:'Sri Lanka Section', cat:'Event', t:'Industry Connect – Rootcode', org:'YPSL', loc:'Colombo', p:180, s:3, m:2, f:400000, me:60, i:6, h:2, ppl:[{name:'Chamod W.',role:'Speaker',position:'SE',email:'chamod@ifs.com'},{name:'Supipi D.',role:'Mentor',position:'QA',email:'supipi@ifs.com'}]},
+        {d:`${nowY}-07-24`, lv:'Student Branch', cat:'Event', t:'AI Community Talk – July', org:'UoJ', loc:'Jaffna', p:150, s:1, m:1, f:120000, me:40, i:5, h:1, ppl:[{name:'Tharaka R.',role:'Speaker',position:'Senior Dev',email:'tharaka@ifs.com'}]},
+        {d:`${nowY-1}-10-12`, lv:'IEEE Global', cat:'Partnership', t:'R10 SYWL – Collaboration', org:'R10', loc:'Tokyo', p:0, s:0, m:0, f:0, me:0, i:0, h:0, ppl:[]},
+        {d:`${nowY-1}-11-02`, lv:'Sri Lanka Section', cat:'Event', t:'Dream Planner Awareness', org:'IEEE SL', loc:'Colombo', p:220, s:2, m:1, f:300000, me:70, i:7, h:2, ppl:[{name:'Dhananjali K.',role:'Speaker',position:'Consultant',email:'dhananjali@ifs.com'}]}
       ];
-      return rows.map(x=>({
-        id: uid(), title:x.t, date:x.d, level:x.lv, category:x.cat, org:x.org, location:x.loc,
-        participants:x.p, speakers:x.s, mentors:x.m, funding:x.f, mentees:x.me, interns:x.i, hires:x.h, notes:''
-      }));
+      return rows.map(x=>({ id: uid(), title:x.t, date:x.d, level:x.lv, category:x.cat, org:x.org, location:x.loc,
+        participants:x.p, speakers:x.s, mentors:x.m, funding:x.f, mentees:x.me, interns:x.i, hires:x.h, notes:'', people: x.ppl }));
     }
 
     // ---------------- Bootstrap ----------------
-    function refresh(){ renderKPIs(); createOrUpdateCharts(); renderTable(); }
-    function init(){ populateYearFilter(); if(!state.engagements.length){ /* optional: preload sample */ } refresh(); }
+    function refresh(){ renderKPIs(); createOrUpdateCharts(); renderTable(); renderOrgTable(); }
+    function init(){ populateYearFilter(); populateOrgFilter(); peopleEditor.load([]); refresh(); }
     init();
   </script>
 </body>
